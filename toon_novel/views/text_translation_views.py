@@ -1,16 +1,27 @@
 import deepl
 from flask import Blueprint, Flask, jsonify, request
 import openai
+import torch
+from diffusers import StableDiffusionPipeline, DiffusionPipeline
 
 app = Flask(__name__)
 
 bp = Blueprint('eng', __name__, url_prefix='/')
 
-translator = deepl.Translator('api')
+translator = deepl.Translator('613bdad4-3ec0-d9aa-1d2c-30fe0c3141c3:fx')  ### 삭제
 
-openai.api_key = "api"
+openai.api_key = "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"  ### 삭제
 
 model = "gpt-3.5-turbo"
+
+hugging_token = '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' ### 삭제
+
+device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+
+pipeline = DiffusionPipeline.from_pretrained("stabilityai/stable-diffusion-xl-base-1.0", 
+                                             torch_dtype=torch.float32, 
+                                             use_safetensors=True, 
+                                             variant="fp16").to(device)
 
 def trans_ko_eng(input):
     result = translator.translate_text(input, target_lang='EN-US')
@@ -35,8 +46,8 @@ def eng_show():
     def summarization(trans_genre, trans_character, trans_plot, trans_input):
     
         messages = [
-                    {"role": "system", "content": f"Please extract the key points from {trans_plot} based on {trans_input}, you don't need to include the entire plot summary"},
-                    {"role": "system", "content": f"Please give the elements separated by commas, such as verbs, subjects and {trans_genre} novel, from {trans_character}'s perspective"},
+                    {"role": "system", "content": f"Please extract the key points from {trans_plot} based on {trans_input} from {trans_character}'s perspective, you don't need to include the entire plot summary"},
+                    {"role": "system", "content": f"Please give the elements separated by commas, such as verbs, subjects and {trans_genre} novel"},
             ]
     
         response = openai.ChatCompletion.create(
@@ -50,11 +61,26 @@ def eng_show():
 
         return result
     
-    prompt = summarization(trans_genre, trans_character, trans_plot, trans_input)
+    result = summarization(trans_genre, trans_character, trans_plot, trans_input)
 
-    return prompt
+    #  서버 pc
+    # pipeline = DiffusionPipeline.from_pretrained("stabilityai/stable-diffusion-xl-base-1.0", 
+    #                                          torch_dtype=torch.float32, 
+    #                                          use_safetensors=True, 
+    #                                          variant="fp16").to(device)
 
+    # 서버 아닐 시
+    pipe = StableDiffusionPipeline.from_pretrained('CompVis/stable-diffusion-v1-4',
+                                                   revision='fp16',
+                                                   torch_dtype=torch.float32,
+                                                   use_auth_token=hugging_token
+                                                   ).to(device)
+    
+    prompt = result
 
+    image = pipe(prompt).images[0]
+
+    return image
 
 
 
