@@ -13,7 +13,7 @@ def main():
     return render_template("upload.html")
 
 # 요약
-openai.api_key = "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"  ### 삭제
+openai.api_key = ""  ### 삭제
 
 model = "gpt-3.5-turbo"
 

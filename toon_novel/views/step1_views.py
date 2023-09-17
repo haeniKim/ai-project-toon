@@ -6,13 +6,13 @@ import time
 
 bp = Blueprint('step1', __name__, url_prefix='/step1')
 
-hugging_token = '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'
+hugging_token = ''
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 print(device)
 
 # Deepl 번역 API 설정
-translator = deepl.Translator("613bdad4-3ec0-d9aa-1d2c-30fe0c3141c3:fx")
+translator = deepl.Translator("")
 
 pipeline = DiffusionPipeline.from_pretrained("stabilityai/stable-diffusion-xl-base-1.0", 
                                              torch_dtype=torch.float32, 
