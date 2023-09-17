@@ -1,17 +1,28 @@
-from flask import Flask, Blueprint, render_template, send_file, request, jsonify
+import json
+import re
+from flask import Flask, jsonify, render_template, request, Blueprint
+import os
+import openai
 
+app = Flask(__name__)
 
-bp = Blueprint('step2', __name__, url_prefix='/step2')
-
+bp = Blueprint('step2', __name__, url_prefix='/')
 
 @bp.route('/upload')
 def main():
     return render_template("upload.html")
 
 
-@app.route('/hello_world') #test api
-def hello_world():
-    return 'Hello, World!'
+# 요약
+openai.api_key = ""  ### 삭제
+
+@bp.route('/upload')
+def main():
+    return render_template("upload.html")
+
+
+model = "gpt-3.5-turbo"
+
 
 # 요약
 openai.api_key = ""  ### 삭제
