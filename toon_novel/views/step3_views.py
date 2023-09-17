@@ -121,3 +121,6 @@ def eng_show():
 #     input_text = data.get('english', '')  
 #     trans_output = trans_ko_eng(input_text)
 #     return jsonify({"번역한 내용": trans_output.text})
+
+
+## 꼬인 거 해결 완료
