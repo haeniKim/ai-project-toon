@@ -8,26 +8,23 @@ app = Flask(__name__)
 
 bp = Blueprint('eng', __name__, url_prefix='/')
 
+# api
 translator = deepl.Translator('613bdad4-3ec0-d9aa-1d2c-30fe0c3141c3:fx')  ### 삭제
-
 openai.api_key = "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"  ### 삭제
 
 model = "gpt-3.5-turbo"
 
 hugging_token = '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' ### 삭제
 
+# cuda 설정
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
-pipeline = DiffusionPipeline.from_pretrained("stabilityai/stable-diffusion-xl-base-1.0", 
-                                             torch_dtype=torch.float32, 
-                                             use_safetensors=True, 
-                                             variant="fp16").to(device)
-
+# 번역  
 def trans_ko_eng(input):
     result = translator.translate_text(input, target_lang='EN-US')
     return result
 
-
+# 영어로 번역해서 이미지 출력
 @bp.route('/trans_eng', methods=['POST'])
 def eng_show():
     data = request.json
@@ -63,24 +60,27 @@ def eng_show():
     
     result = summarization(trans_genre, trans_character, trans_plot, trans_input)
 
+    return jsonify({"결과": result,
+                    "값 타입" : type(result)})
+
     #  서버 pc
     # pipeline = DiffusionPipeline.from_pretrained("stabilityai/stable-diffusion-xl-base-1.0", 
     #                                          torch_dtype=torch.float32, 
     #                                          use_safetensors=True, 
     #                                          variant="fp16").to(device)
 
-    # 서버 아닐 시
-    pipe = StableDiffusionPipeline.from_pretrained('CompVis/stable-diffusion-v1-4',
-                                                   revision='fp16',
-                                                   torch_dtype=torch.float32,
-                                                   use_auth_token=hugging_token
-                                                   ).to(device)
+    # # 서버 아닐 시
+    # pipe = StableDiffusionPipeline.from_pretrained('CompVis/stable-diffusion-v1-4',
+    #                                                revision='fp16',
+    #                                                torch_dtype=torch.float32,
+    #                                                use_auth_token=hugging_token
+    #                                                ).to(device)
     
-    prompt = result
+    # prompt = result
 
-    image = pipe(prompt).images[0]
+    # image = pipe(prompt).images[0]
 
-    return image
+    # return image
 
 
 
