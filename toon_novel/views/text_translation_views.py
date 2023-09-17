@@ -6,9 +6,9 @@ app = Flask(__name__)
 
 bp = Blueprint('eng', __name__, url_prefix='/')
 
-translator = deepl.Translator('613bdad4-3ec0-d9aa-1d2c-30fe0c3141c3:fx')
+translator = deepl.Translator('api')
 
-openai.api_key = "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"
+openai.api_key = "api"
 
 model = "gpt-3.5-turbo"
 
