@@ -12,6 +12,18 @@ bp = Blueprint('step2', __name__, url_prefix='/')
 def main():
     return render_template("upload.html")
 
+
+# 요약
+openai.api_key = ""  ### 삭제
+
+@bp.route('/upload')
+def main():
+    return render_template("upload.html")
+
+
+model = "gpt-3.5-turbo"
+
+
 # 요약
 openai.api_key = ""  ### 삭제
 
