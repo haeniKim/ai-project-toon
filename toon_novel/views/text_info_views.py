@@ -18,7 +18,7 @@ def hello_world():
     return 'Hello, World!'
 
 # 요약
-openai.api_key = "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"  ### 삭제
+openai.api_key = ""  ### 삭제
 
 model = "gpt-3.5-turbo"
 
