@@ -8,14 +8,16 @@ app = Flask(__name__)
 
 bp = Blueprint('step2', __name__, url_prefix='/step2')
 
-@bp.route('/upload')
-def main():
-    return render_template("upload.html")
+# @bp.route('/upload')
+# def main():
+#     return render_template("upload.html")
+
 
 # 요약
 model = "gpt-3.5-turbo"
 
-openai.api_key = "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"  ### 삭제
+openai.api_key = ""  ### 삭제
+
 
 # 장르 설정
 #genre = 'romance'
@@ -34,11 +36,12 @@ def summarize(input_text):
 
             return response['choices'][0]['message']['content'] 
 
+
 def summarize_text(input_text):
     if len(input_text) > 3550:  ## 여기 토큰이 처리를 못 하는데 손 보기
         return '파일의 용량이 너무 커서 처리할 수 없습니다.'
     
-    elif len(input_text) >= 3500: # 내용 길이가 3500 넘는 경우
+    elif len(input_text) >= 3550: # 내용 길이가 3550 넘는 경우
         middle = len(input_text) // 2
 
         input_text1 = input_text[:middle]
@@ -85,7 +88,7 @@ def total_summarization(input):
     return result
 
 
-@bp.route('/success', methods=['POST', 'GET'])
+@bp.route('/success', methods=['POST'])
 def success():
     if request.method == 'POST':
 
@@ -138,8 +141,52 @@ def success():
                 'contents': total_summary
             }
 
-            # return jsonify(response_data) 
-            return json.dumps(response_data, ensure_ascii=False) # 한글로 출력
+            # return jsonify(response_data)
+
+            # json 파일 저장
+            # output_file = 'output.json'
+            # with open(output_file, 'w', encoding='utf-8') as output:
+            #     json.dump(response_data, output, ensure_ascii=False, indent=3)
+
+            # # 한국어로 출력
+            # with open(output_file, 'r', encoding='utf-8') as output:
+            #     output_contents = output.read()
+            
+            # 성공 메시지 반환
+            return json.dumps(response_data, ensure_ascii=False) 
+
+    return "파일 업로드 및 처리에 실패했습니다."
+
+
+
+# @bp.route('/img', methods=['GET'])
+# def img():
+#     image_url = '/static/image/novel/test1.png' 
+    
+#     return render_template('img_display.html', image_url=image_url)
+
+
+# @bp.route('/img', methods=['POST'])
+# def img():
+#     if request.method == 'POST':
+#         # 이미지를 업로드하고 저장할 디렉토리 경로
+#         upload_folder = "static/novel"
         
-    else:  # GET
-        return '성공'
+#         # 디렉토리가 없으면 생성
+#         if not os.path.exists(upload_folder):
+#             os.makedirs(upload_folder)
+        
+#         # 업로드된 파일 가져오기
+#         uploaded_file = request.files['image']
+        
+#         if uploaded_file:
+#             # 이미지 파일 저장
+#             image_path = os.path.join(upload_folder, uploaded_file.filename)
+#             uploaded_file.save(image_path)
+            
+#             # 이미지를 HTML 페이지에 표시할 URL
+#             image_url = f"/{image_path}"
+            
+#             return render_template('img_display.html', image_url=image_url)
+    
+#     return render_template('upload_image.html')
