@@ -60,7 +60,3 @@ def create_basic():
     
     # Render the HTML form for GET requests
     return render_template("step1.html")
-
-    
-               
-               

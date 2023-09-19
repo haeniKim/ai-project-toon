@@ -8,26 +8,15 @@ app = Flask(__name__)
 
 bp = Blueprint('step2', __name__, url_prefix='/')
 
-@bp.route('/upload')
-def main():
-    return render_template("upload.html")
-
-
-# 요약
-openai.api_key = ""  ### 삭제
 
 @bp.route('/upload')
 def main():
     return render_template("upload.html")
 
-
-model = "gpt-3.5-turbo"
-
-
 # 요약
-openai.api_key = ""  ### 삭제
-
 model = "gpt-3.5-turbo"
+
+openai.api_key = ""  ### 삭제
 
 # 장르 설정
 #genre = 'romance'
@@ -150,18 +139,7 @@ def success():
                 'contents': total_summary
             }
 
-            # return jsonify(response_data)
-
-            # json 파일 저장
-            output_file = 'output.json'
-            with open(output_file, 'w', encoding='utf-8') as output:
-                json.dump(response_data, output, ensure_ascii=False, indent=3)
-
-            # 한국어로 출력
-            with open(output_file, 'r', encoding='utf-8') as output:
-                output_contents = output.read()
-            
-            # 성공 메시지 반환
-            return output_contents
+            # return jsonify(response_data) 
+            return json.dumps(response_data, ensure_ascii=False) # 한글로 출력
 
     return "파일 업로드 및 처리에 실패했습니다."

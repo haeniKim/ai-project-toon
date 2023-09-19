@@ -11,6 +11,7 @@ bp = Blueprint('step3', __name__, url_prefix='/step3')
 
 # api
 translator = deepl.Translator('')  ### 삭제
+
 openai.api_key = ""  ### 삭제
 
 model = "gpt-3.5-turbo"
