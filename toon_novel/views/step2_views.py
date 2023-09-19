@@ -6,8 +6,7 @@ import openai
 
 app = Flask(__name__)
 
-bp = Blueprint('step2', __name__, url_prefix='/')
-
+bp = Blueprint('step2', __name__, url_prefix='/step2')
 
 @bp.route('/upload')
 def main():
@@ -16,7 +15,7 @@ def main():
 # 요약
 model = "gpt-3.5-turbo"
 
-openai.api_key = ""  ### 삭제
+openai.api_key = "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"  ### 삭제
 
 # 장르 설정
 #genre = 'romance'
@@ -86,7 +85,7 @@ def total_summarization(input):
     return result
 
 
-@bp.route('/success', methods=['POST'])
+@bp.route('/success', methods=['POST', 'GET'])
 def success():
     if request.method == 'POST':
 
@@ -141,5 +140,6 @@ def success():
 
             # return jsonify(response_data) 
             return json.dumps(response_data, ensure_ascii=False) # 한글로 출력
-
-    return "파일 업로드 및 처리에 실패했습니다."
+        
+    else:  # GET
+        return '성공'
