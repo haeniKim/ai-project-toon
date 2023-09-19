@@ -19,12 +19,12 @@ bp = Blueprint('step1', __name__, url_prefix='/step1')
 #                                              use_safetensors=True, 
 #                                              variant="fp16").to(device)
 
-# # 서버 아닐 시
-# # pipe = StableDiffusionPipeline.from_pretrained('CompVis/stable-diffusion-v1-4',
-# #                                                revision='fp16',
-# #                                                torch_dtype=torch.float32,
-# #                                                use_auth_token=hugging_token
-# #                                                ).to(device)
+# 서버 아닐 시
+# pipe = StableDiffusionPipeline.from_pretrained('CompVis/stable-diffusion-v1-4',
+#                                                revision='fp16',
+#                                                torch_dtype=torch.float32,
+#                                                use_auth_token=hugging_token
+#                                                ).to(device)
 
 # @bp.route('/', methods=['POST', 'GET'])
 # def create_basic():
@@ -60,3 +60,4 @@ bp = Blueprint('step1', __name__, url_prefix='/step1')
     
 #     # Render the HTML form for GET requests
 #     return render_template("step1.html")
+             

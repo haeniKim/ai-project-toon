@@ -12,7 +12,6 @@ bp = Blueprint('step2', __name__, url_prefix='/step2')
 # def main():
 #     return render_template("upload.html")
 
-
 # 요약
 model = "gpt-3.5-turbo"
 
@@ -88,105 +87,71 @@ def total_summarization(input):
     return result
 
 
-@bp.route('/success', methods=['POST'])
-def success():
-    if request.method == 'POST':
-
-        uploaded_file = request.files['file']
-
-        # 파일 없는 경우
-        if uploaded_file is None:
-            return '파일이 존재하지 않습니다.'
-        
-        else:  # 파일 있는 경우
-            upload_folder = "uploads"  
-            if not os.path.exists(upload_folder):
-                os.makedirs(upload_folder)
-            
-            file_path = os.path.join(upload_folder, uploaded_file.filename)
-            uploaded_file.save(file_path)
-
-            with open(file_path, 'r', encoding='UTF-8') as file:
-                file_contents = file.read()
-
-                pattern = r'(\* \* \*|\*{3})'
-                file_contents = file_contents.replace('\n', ' ')
-                sections = re.split(pattern, file_contents)
-                sections = [section.strip() for section in sections if section.strip()]
-
-                 # re로 나뉜 애 중에서 홀수, 짝수 같은 문단에 존재하게 만듦
-                merged_sections = []
-                for i in range(len(sections)):
-                    if i % 2 == 0 and i < len(sections)-1:
-                        merged_section = sections[i] + ' ' + sections[i+1]
-                        merged_sections.append(merged_section)
-
-                merged_sections = ",".join(merged_sections)
-                paragraphs = merged_sections.split('\n')
-
-                # 각 문단 요약
-                summaries = []
-                
-                for paragraph in paragraphs:
-                    summary = summarize_text(paragraph)
-                    summaries.append(summary)
-                                    
-                total_summary = total_summarization('\n'.join(summaries))
-                total_summary = total_summary.replace('\n', ' ')
-    
-
-            # 파일 내용을 JSON 형식으로 반환
-            response_data = {
-                'filename': uploaded_file.filename,
-                'contents': total_summary
-            }
-
-            # return jsonify(response_data)
-
-            # json 파일 저장
-            # output_file = 'output.json'
-            # with open(output_file, 'w', encoding='utf-8') as output:
-            #     json.dump(response_data, output, ensure_ascii=False, indent=3)
-
-            # # 한국어로 출력
-            # with open(output_file, 'r', encoding='utf-8') as output:
-            #     output_contents = output.read()
-            
-            # 성공 메시지 반환
-            return json.dumps(response_data, ensure_ascii=False) 
-
-    return "파일 업로드 및 처리에 실패했습니다."
-
-
-
-# @bp.route('/img', methods=['GET'])
-# def img():
-#     image_url = '/static/image/novel/test1.png' 
-    
-#     return render_template('img_display.html', image_url=image_url)
-
-
-# @bp.route('/img', methods=['POST'])
-# def img():
+# @bp.route('/success', methods=['POST'])
+# def success():
 #     if request.method == 'POST':
-#         # 이미지를 업로드하고 저장할 디렉토리 경로
-#         upload_folder = "static/novel"
+
+#         uploaded_file = request.files['file']
+
+#         # 파일 없는 경우
+#         if uploaded_file is None:
+#             return '파일이 존재하지 않습니다.'
         
-#         # 디렉토리가 없으면 생성
-#         if not os.path.exists(upload_folder):
-#             os.makedirs(upload_folder)
-        
-#         # 업로드된 파일 가져오기
-#         uploaded_file = request.files['image']
-        
-#         if uploaded_file:
-#             # 이미지 파일 저장
-#             image_path = os.path.join(upload_folder, uploaded_file.filename)
-#             uploaded_file.save(image_path)
+#         else:  # 파일 있는 경우
+#             upload_folder = "uploads"  
+#             if not os.path.exists(upload_folder):
+#                 os.makedirs(upload_folder)
             
-#             # 이미지를 HTML 페이지에 표시할 URL
-#             image_url = f"/{image_path}"
-            
-#             return render_template('img_display.html', image_url=image_url)
+#             file_path = os.path.join(upload_folder, uploaded_file.filename)
+#             uploaded_file.save(file_path)
+
+#             with open(file_path, 'r', encoding='UTF-8') as file:
+#                 file_contents = file.read()
+
+#                 pattern = r'(\* \* \*|\*{3})'
+#                 file_contents = file_contents.replace('\n', ' ')
+#                 sections = re.split(pattern, file_contents)
+#                 sections = [section.strip() for section in sections if section.strip()]
+
+#                  # re로 나뉜 애 중에서 홀수, 짝수 같은 문단에 존재하게 만듦
+#                 merged_sections = []
+#                 for i in range(len(sections)):
+#                     if i % 2 == 0 and i < len(sections)-1:
+#                         merged_section = sections[i] + ' ' + sections[i+1]
+#                         merged_sections.append(merged_section)
+
+#                 merged_sections = ",".join(merged_sections)
+#                 paragraphs = merged_sections.split('\n')
+
+#                 # 각 문단 요약
+#                 summaries = []
+                
+#                 for paragraph in paragraphs:
+#                     summary = summarize_text(paragraph)
+#                     summaries.append(summary)
+                                    
+#                 total_summary = total_summarization('\n'.join(summaries))
+#                 total_summary = total_summary.replace('\n', ' ')
     
-#     return render_template('upload_image.html')
+
+#             # 파일 내용을 JSON 형식으로 반환
+#             response_data = {
+#                 'filename': uploaded_file.filename,
+#                 'contents': total_summary
+#             }
+
+#             # return jsonify(response_data)
+
+#             # json 파일 저장
+#             # output_file = 'output.json'
+#             # with open(output_file, 'w', encoding='utf-8') as output:
+#             #     json.dump(response_data, output, ensure_ascii=False, indent=3)
+
+#             # # 한국어로 출력
+#             # with open(output_file, 'r', encoding='utf-8') as output:
+#             #     output_contents = output.read()
+            
+#             # 성공 메시지 반환
+#             return json.dumps(response_data, ensure_ascii=False) 
+
+#     return "파일 업로드 및 처리에 실패했습니다."
