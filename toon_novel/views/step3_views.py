@@ -12,9 +12,8 @@ bp = Blueprint('step3', __name__, url_prefix='/step3')
 # api
 translator = deepl.Translator('')  ### 삭제
 
-openai.api_key = ""  ### 삭제
-
 model = "gpt-3.5-turbo"
+openai.api_key = ""  ### 삭제
 
 hugging_token = '' ### 삭제
 
@@ -27,7 +26,7 @@ def trans_ko_eng(input):
     return result
 
 # 영어로 번역해서 이미지 출력
-@bp.route('/trans_eng', methods=['POST'])
+@bp.route('/trans_eng_img', methods=['POST'])
 def eng_show():
     data = request.json
 
@@ -74,30 +73,28 @@ def eng_show():
     
     
     # 이미지 파일 저장 디렉토리
-    save_directory = 'D:/toonmaker_git/ai-project-toon/toon_novel/static/image/novel'
+    save_directory = '/static/image/novel'
 
     # 이미지 파일 저장 번호 초기화
     image_number = 1
 
-    # pipe = DiffusionPipeline.from_pretrained("stabilityai/stable-diffusion-xl-base-1.0", torch_dtype=torch.float32, use_safetensors=True, variant="fp16").to(device)
-    # pipe = DiffusionPipeline.from_pretrained(
-    #     "stabilityai/stable-diffusion-xl-base-1.0",
-    #     torch_dtype=torch.float32,
-    #     use_safetensors=True,
-    #     variant="fp16",
-    #     max_split_size_mb=20,  # 메모리 크기에 따라 적절한 값을 선택하세요.
-    # ).to(device)
+    # # pipe = DiffusionPipeline.from_pretrained("stabilityai/stable-diffusion-xl-base-1.0", torch_dtype=torch.float32, use_safetensors=True, variant="fp16").to(device)
+    # # pipe = DiffusionPipeline.from_pretrained(
+    # #     "stabilityai/stable-diffusion-xl-base-1.0",
+    # #     torch_dtype=torch.float32,
+    # #     use_safetensors=True,
+    # #     variant="fp16",
+    # #     max_split_size_mb=20,  # 메모리 크기에 따라 적절한 값을 선택하세요.
+    # # ).to(device)
 
 
     # 이미지 파일 이름 생성 및 확인
     while True:
-        file_name = f'test{image_number}.png'
+        file_name = f'complete{image_number}.png'
         file_path = os.path.join(save_directory, file_name)
 
         # 이미 파일이 존재하지 않는 경우에만 저장
         if not os.path.exists(file_path):
-            n_steps = 40
-            high_noise_frac = 0.8
 
             # 번역 수행
             prompt = result
@@ -108,13 +105,24 @@ def eng_show():
             # 이미지를 파일로 저장
             image.save(file_path.replace('\\', '/')) 
             print(f"이미지를 {file_name} 파일로 저장했습니다.")
-            break
-        
-        image_number += 1
-        
-    return '웹소설 삽화 생성 성공'
-    
 
+            # 서버에 보낼 파일
+            image_url = f'/static/image/novel/{file_name}'
+
+            break    
+
+        image_number += 1
+    
+    # image_url = '/static/image/novel/complete1.png'
+
+    # response_data = {
+    # 'message': '이미지 생성 및 저장 성공',
+    # 'image_url': image_url
+    # } 
+    # return jsonify(response_data)
+    
+    return jsonify({'image_url': image_url})
+    
 
 # @bp.route('/trans_eng', methods=['POST'])
 # def eng_show():
@@ -122,4 +130,3 @@ def eng_show():
 #     input_text = data.get('english', '')  
 #     trans_output = trans_ko_eng(input_text)
 #     return jsonify({"번역한 내용": trans_output.text})
-
