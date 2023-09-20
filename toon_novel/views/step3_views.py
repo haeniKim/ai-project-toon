@@ -2,6 +2,7 @@ from flask import Flask, Blueprint, render_template, send_file, request, jsonify
 import deepl
 from flask import Blueprint, Flask, jsonify, request
 import openai
+import requests
 import torch
 from diffusers import StableDiffusionPipeline, DiffusionPipeline
 from PIL import Image
@@ -15,7 +16,7 @@ translator = deepl.Translator('')  ### 삭제
 model = "gpt-3.5-turbo"
 openai.api_key = ""  ### 삭제
 
-hugging_token = '' ### 삭제
+hugging_token = ''  ### 삭제
 
 # cuda 설정
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
@@ -26,7 +27,7 @@ def trans_ko_eng(input):
     return result
 
 # 영어로 번역해서 이미지 출력
-@bp.route('/trans_eng_img', methods=['POST', 'GET'])
+@bp.route('/trans_eng_img', methods=['POST'])
 def eng_show():
     if request.method=='POST':
         data = request.json
@@ -79,52 +80,59 @@ def eng_show():
         # 이미지 파일 저장 번호 초기화
         image_number = 1
 
-        # # pipe = DiffusionPipeline.from_pretrained("stabilityai/stable-diffusion-xl-base-1.0", torch_dtype=torch.float32, use_safetensors=True, variant="fp16").to(device)
-        # # pipe = DiffusionPipeline.from_pretrained(
-        # #     "stabilityai/stable-diffusion-xl-base-1.0",
-        # #     torch_dtype=torch.float32,
-        # #     use_safetensors=True,
-        # #     variant="fp16",
-        # #     max_split_size_mb=20,  # 메모리 크기에 따라 적절한 값을 선택하세요.
-        # # ).to(device)
+        # pipe = DiffusionPipeline.from_pretrained("stabilityai/stable-diffusion-xl-base-1.0", torch_dtype=torch.float32, use_safetensors=True, variant="fp16").to(device)
+        # pipe = DiffusionPipeline.from_pretrained(
+        #     "stabilityai/stable-diffusion-xl-base-1.0",
+        #     torch_dtype=torch.float32,
+        #     use_safetensors=True,
+        #     variant="fp16",
+        #     max_split_size_mb=20,  # 메모리 크기에 따라 적절한 값을 선택하세요.
+        # ).to(device)
 
 
-        # 이미지 파일 이름 생성 및 확인
-        while True:
-            file_name = f'complete{image_number}.png'
-            file_path = os.path.join(save_directory, file_name)
+        # # 이미지 파일 이름 생성 및 확인
+        # while True:
+        #     file_name = f'complete{image_number}.png'
+        #     file_path = os.path.join(save_directory, file_name)
 
-            # 이미 파일이 존재하지 않는 경우에만 저장
-            if not os.path.exists(file_path):
+        #     # 이미 파일이 존재하지 않는 경우에만 저장
+        #     if not os.path.exists(file_path):
 
-                # 번역 수행
-                prompt = result
-                print(f'prompt : {prompt}')
+        #         # 번역 수행
+        #         prompt = result
+        #         print(f'prompt : {prompt}')
 
-                image = pipe(prompt).images[0]
+        #         image = pipe(prompt).images[0]
 
-                # 이미지를 파일로 저장
-                image.save(file_path.replace('\\', '/')) 
-                print(f"이미지를 {file_name} 파일로 저장했습니다.")
-
-                # 서버에 보낼 파일
-                image_url = f'/static/image/novel/{file_name}'
-
-                break    
-
-            image_number += 1
-        
-        # image_url = '/static/image/novel/complete1.png'
+        #         # 이미지를 파일로 저장
+        #         image.save(file_path.replace('\\', '/')) 
+        #         print(f"이미지를 {file_name} 파일로 저장했습니다.")
 
         # response_data = {
         # 'message': '이미지 생성 및 저장 성공',
         # 'image_url': image_url
         # } 
         # return jsonify(response_data)
-        
-        return jsonify({'image_url': image_url})
-    else:
-        pass
+        # return jsonify({'image_url': image_url})
+
+        file_name = f'complete{image_number}.png'
+        file_path = os.path.join(save_directory, file_name)
+
+
+        # 서버에 파일 'rb'(바이너리 리드)방식으로 엶
+        with open(file_path, 'rb') as file:
+            files = {'file' : (file_name, file)}
+            server_url = 'http://localhost:5001/upload'
+            response = requests.post(server_url, files=files)
+            if response.status_code == 200:
+                print('파일 전송 성공')
+            else:
+                print('파일 전송 실패')
+        # break
+
+        image_number += 1
+
+    return '이미지 전송 성공'
 
     
 

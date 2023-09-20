@@ -9,13 +9,9 @@ app = Flask(__name__)
 bp = Blueprint('step2', __name__, url_prefix='/step2')
 
 # 요약
-model = "gpt-3.5-turbo"
+# model = "gpt-3.5-turbo"
 
-openai.api_key = ""  ### 삭제
-
-
-# 장르 설정
-#genre = 'romance'
+# openai.api_key = ""  ### 삭제
 
 # def summarize(input_text):
 #             messages = [
