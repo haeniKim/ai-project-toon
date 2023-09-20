@@ -8,10 +8,6 @@ app = Flask(__name__)
 
 bp = Blueprint('step2', __name__, url_prefix='/step2')
 
-# @bp.route('/upload')
-# def main():
-#     return render_template("upload.html")
-
 # 요약
 model = "gpt-3.5-turbo"
 
@@ -21,70 +17,70 @@ openai.api_key = ""  ### 삭제
 # 장르 설정
 #genre = 'romance'
 
-def summarize(input_text):
-            messages = [
-                    {"role": "system", "content": "소설 내용을 한 문장으로 요약해주세요."},
-                    {"role": "user", "content": input_text}
-            ]
+# def summarize(input_text):
+#             messages = [
+#                     {"role": "system", "content": "소설 내용을 한 문장으로 요약해주세요."},
+#                     {"role": "user", "content": input_text}
+#             ]
 
-            response = openai.ChatCompletion.create(
-                model=model,
-                messages=messages,
-                max_tokens = 500
-            )
+#             response = openai.ChatCompletion.create(
+#                 model=model,
+#                 messages=messages,
+#                 max_tokens = 500
+#             )
 
-            return response['choices'][0]['message']['content'] 
+#             return response['choices'][0]['message']['content'] 
 
 
-def summarize_text(input_text):
-    if len(input_text) > 3550:  ## 여기 토큰이 처리를 못 하는데 손 보기
-        return '파일의 용량이 너무 커서 처리할 수 없습니다.'
+# def summarize_text(input_text):
+#     if len(input_text) > 3550:  ## 여기 토큰이 처리를 못 하는데 손 보기
+#         return '파일의 용량이 너무 커서 처리할 수 없습니다.'
     
-    elif len(input_text) >= 3550: # 내용 길이가 3550 넘는 경우
-        middle = len(input_text) // 2
+#     elif len(input_text) >= 3550: # 내용 길이가 3550 넘는 경우
+#         middle = len(input_text) // 2
 
-        input_text1 = input_text[:middle]
-        input_text2 = input_text[middle:]
+#         input_text1 = input_text[:middle]
+#         input_text2 = input_text[middle:]
 
-        answer1 = summarize(input_text1)
-        answer2 = summarize(input_text2)
+#         answer1 = summarize(input_text1)
+#         answer2 = summarize(input_text2)
 
-        return answer1, answer2
+#         return answer1, answer2
 
-    else: # 내용 길이가 3500 안 넘는 경우
-        messages = [
-                {"role": "system", "content": "소설 내용을 한 문장으로 요약해주세요."},
-                {"role": "user", "content": input_text}
-        ]
+#     else: # 내용 길이가 3500 안 넘는 경우
+#         messages = [
+#                 {"role": "system", "content": "소설 내용을 한 문장으로 요약해주세요."},
+#                 {"role": "user", "content": input_text}
+#         ]
 
-        response = openai.ChatCompletion.create(
-            model=model,
-            messages=messages,
-            max_tokens = 500
-        )
+#         response = openai.ChatCompletion.create(
+#             model=model,
+#             messages=messages,
+#             max_tokens = 500
+#         )
 
-        result = response['choices'][0]['message']['content']
+#         result = response['choices'][0]['message']['content']
 
-        return result
+#         return result
         
 
-# 요약된 모든 문단에 전체 요약 수행
-def total_summarization(input):
-    messages = [
-                {"role": "system", "content": "소설을 주인공 시선으로 정리해주세요."},
-                {"role": "system", "content": "한국어로 one sentence 요약해주세요."},
-                {"role": "user", "content": input}
-        ]
+# # 요약된 모든 문단에 전체 요약 수행
+# def total_summarization(input):
+#     messages = [
+#                 {"role": "system", "content": "소설을 주인공 시선으로 정리해주세요."},
+#                 {"role": "system", "content": "한국어로 one sentence 요약해주세요."},
+#                 {"role": "user", "content": input}
+#         ]
 
-    response = openai.ChatCompletion.create(
-        model=model,
-        messages=messages,
-        max_tokens = 800
-    )
+#     response = openai.ChatCompletion.create(
+#         model=model,
+#         messages=messages,
+#         max_tokens = 800
+#     )
 
-    result = response['choices'][0]['message']['content']
+#     result = response['choices'][0]['message']['content']
 
-    return result
+#     return result
 
 
 # @bp.route('/success', methods=['POST'])
@@ -140,18 +136,18 @@ def total_summarization(input):
 #                 'contents': total_summary
 #             }
 
-#             # return jsonify(response_data)
+# #             # return jsonify(response_data)
 
-#             # json 파일 저장
-#             # output_file = 'output.json'
-#             # with open(output_file, 'w', encoding='utf-8') as output:
-#             #     json.dump(response_data, output, ensure_ascii=False, indent=3)
+# #             # json 파일 저장
+# #             # output_file = 'output.json'
+# #             # with open(output_file, 'w', encoding='utf-8') as output:
+# #             #     json.dump(response_data, output, ensure_ascii=False, indent=3)
 
-#             # # 한국어로 출력
-#             # with open(output_file, 'r', encoding='utf-8') as output:
-#             #     output_contents = output.read()
+# #             # # 한국어로 출력
+# #             # with open(output_file, 'r', encoding='utf-8') as output:
+# #             #     output_contents = output.read()
             
-#             # 성공 메시지 반환
-#             return json.dumps(response_data, ensure_ascii=False) 
+#         # 성공 메시지 반환
+#         return json.dumps(response_data, ensure_ascii=False) 
 
-#     return "파일 업로드 및 처리에 실패했습니다."
+    # return "파일 업로드 및 처리에 실패했습니다."
