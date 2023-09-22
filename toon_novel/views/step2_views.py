@@ -152,7 +152,9 @@ def success():
 #             # with open(output_file, 'r', encoding='utf-8') as output:
 #             #     output_contents = output.read()
             
-        # 성공 메시지 반환
-        return json.dumps(response_data, ensure_ascii=False) 
+        # # 성공 메시지 반환
+        # return json.dumps(response_data, ensure_ascii=False) 
+        return f'result: {response_data}'
 
     return "파일 업로드 및 처리에 실패했습니다."
+
